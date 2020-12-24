@@ -6,3 +6,4 @@
   `--gitignore` parameter (#1399 by siprbaum)
 * Speed up git-tfs startup time by removing a useless `git rev-parse --show-prefix` invocation.
   In addition, make a lot of small internal cleanups eliminating dead code (#1400 by siprbaum)
+* Support for specifying .gitattributes file in the Init and Clone commands
