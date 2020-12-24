@@ -17,6 +17,7 @@ Prefer the [clone](clone.md) command to initialize and fetch changesets from a T
           --shared[=VALUE]       Passed to git-init
           --initial-branch=VALUE Passed to git-init (requires Git >= 2.28.0)
           --autocrlf=VALUE       Normalize line endings (default: false)
+          --gitattributes=VALUE  Path to the .gitattributes file to include
           --ignorecase=VALUE     Ignore case in file paths (default: system
                                      default)
           --bare                 clone the TFS repository in a bare git repository

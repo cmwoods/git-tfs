@@ -12,3 +12,4 @@
   respect to initial branch names (#1405 by fineol)
 * Fix issue #1409: cloning a TFS project whose first changeset is a rename quietly
   fails if you specify the `--gitignore` option (#1412 by fineol)
+* Support for specifying .gitattributes file in the Init and Clone commands
