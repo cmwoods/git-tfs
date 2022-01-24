@@ -17,10 +17,11 @@ a TFS source tree and fetch all the changesets
 		  --template=VALUE       Passed to git-init
 		  --shared[=VALUE]       Passed to git-init
 		  --autocrlf=VALUE       Normalize line endings (default: false)
-		  --gitattributes=VALUE  Path to the .gitattributes file to use during initialization
 		  --ignorecase=VALUE     Ignore case in file paths (default: system default)
 		  --bare                 clone the TFS repository in a bare git repository
 		  --workspace=VALUE      set tfs workspace to a specific folder (a shorter path is better!)
+		  --gitattributes=VALUE  Path to the .gitattributes file to include. Only limited support
+								   for gitattributes implemented, see documentation.
 		  --gitignore=VALUE      Path toward the .gitignore file which be
 								   committed and used to ignore files
 		  --ignore-regex=VALUE   a regex of files to ignore
@@ -60,6 +61,9 @@ Make sure that you use a local drive (and not a network share) where the clone i
 `git-tfs` didn't receive any explicit testing for cloning on a network share and there are known reports
 like [Issue 1373](https://github.com/git-tfs/git-tfs/issues/1373) where cloning/fetching a shelveset
 didn't work when the clone was done on a network share.
+
+.gitattributes support is currently limited to line endings only. Clean and smudge filtering hooks are
+supported but neither libgit2 nor git-tfs will shell out to external programs on your behalf.
 
 ## Examples
 ### Simple

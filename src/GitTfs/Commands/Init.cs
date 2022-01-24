@@ -36,7 +36,7 @@ namespace GitTfs.Commands
             get
             {
                 return _initOptions.OptionSet.Merge(_remoteOptions.OptionSet)
-                    .Add("gitattributes=", "Path to the .gitattributes file to include", v => _gitAttributesFilePath = v);
+                    .Add("gitattributes=", "Path to the .gitattributes file to include. Only limited support for gitattributes implemented, see documentation.", v => _gitAttributesFilePath = v);
             }
         }
 
