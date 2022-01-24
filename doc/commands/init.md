@@ -17,12 +17,13 @@ Prefer the [clone](clone.md) command to initialize and fetch changesets from a T
           --shared[=VALUE]       Passed to git-init
           --initial-branch=VALUE Passed to git-init (requires Git >= 2.28.0)
           --autocrlf=VALUE       Normalize line endings (default: false)
-          --gitattributes=VALUE  Path to the .gitattributes file to include
           --ignorecase=VALUE     Ignore case in file paths (default: system
                                      default)
           --bare                 clone the TFS repository in a bare git repository
           --workspace=VALUE      set tfs workspace to a specific folder (a
                                    shorter path is better!)
+          --gitattributes=VALUE  Path to the .gitattributes file to include. Only limited support
+								   for gitattributes implemented, see documentation.
           --ignore-regex=VALUE   a regex of files to ignore
           --no-metadata          leave out the 'git-tfs-id:' tag in commit
                                    messages
@@ -31,6 +32,11 @@ Prefer the [clone](clone.md) command to initialize and fetch changesets from a T
       -u, --username=VALUE       TFS username
       -p, --password=VALUE       TFS password
           --no-parallel          Do not do parallel requests to TFS
+
+## Remark
+
+.gitattributes support is currently limited to line endings only. Clean and smudge filtering hooks are
+supported but neither libgit2 nor git-tfs will shell out to external programs on your behalf.
 
 ## Examples
 
