@@ -401,6 +401,145 @@ namespace GitTfs.Test.Integration
         }
 
         [FactExceptOnUnix]
+        public void LineNormalizationWhenGitAttributesGivenAndAutocrlfFalse()
+        {
+            string gitAttributesFile = Path.Combine(h.Workdir, "git.Attributes");
+            string gitAttributesContent = "*.bat eol=crlf\r\n*.sh eol=lf\r\n";
+            string readmeContent = "tld \r\n another line \r\n";
+            string scriptBatContent = "rem Line 1\r\nrem Line 2\r\n";
+            string scriptBatLFContent = "rem Line 1\nrem Line 2\n";
+            string scriptShContent = "#!sh\r\n# Line 2\r\n# Line3\r\n";
+            string scriptShLFContent = "#!sh\n# Line 2\n# Line3\n";
+
+            File.WriteAllText(gitAttributesFile, gitAttributesContent);
+
+            h.SetupFake(r =>
+            {
+                r.Changeset(1, "Project created from template", DateTime.Parse("2012-01-01 12:12:12 -05:00"))
+                    .Change(TfsChangeType.Add, TfsItemType.Folder, "$/MyProject");
+                r.Changeset(2, "Add some files", DateTime.Parse("2012-01-02 12:12:12 -05:00"))
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/README", readmeContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script1.bat", scriptBatContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script2.bat", scriptBatLFContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script1.cmd", scriptBatContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script2.cmd", scriptBatLFContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script1.sh", scriptShContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script2.sh", scriptShLFContent);
+            });
+            h.Run("clone", h.TfsUrl, "$/MyProject", "MyProject", "--autocrlf=false", $"--gitattributes={gitAttributesFile}");
+
+            // Remove all the files from index and working tree then do a hard reset to the HEAD to force
+            // a clean get of the files as they would appear with .gitattributes settings applied.
+            h.Run("rm", "-rfq", ".");
+            h.Run("reset", "--hard", "HEAD");
+
+            // The file given in --gitattributes parameter is imported as is to .gitattributes; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", ".gitattributes", gitAttributesContent);
+            h.AssertFileInIndex("MyProject", ".gitattributes", gitAttributesContent);
+
+            // README is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "README", readmeContent);
+            h.AssertFileInIndex("MyProject", "README", readmeContent);
+
+            // script1.bat is imported converting to LF; LF in index, CRLF in workspace
+            h.AssertFileInWorkspace("MyProject", "script1.bat", scriptBatContent);
+            h.AssertFileInIndex("MyProject", "script1.bat", scriptBatLFContent);
+
+            // script2.bat is imported as is; LF in index, CRLF in workspace
+            h.AssertFileInWorkspace("MyProject", "script2.bat", scriptBatContent);
+            h.AssertFileInIndex("MyProject", "script2.bat", scriptBatLFContent);
+
+            // script1.cmd is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "script1.cmd", scriptBatContent);
+            h.AssertFileInIndex("MyProject", "script1.cmd", scriptBatContent);
+
+            // script2.cmd is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "script2.cmd", scriptBatLFContent);
+            h.AssertFileInIndex("MyProject", "script2.cmd", scriptBatLFContent);
+
+            // script1.sh is imported converting CRLF to LF; LF in index, LF in workspace
+            h.AssertFileInWorkspace("MyProject", "script1.sh", scriptShLFContent);
+            h.AssertFileInIndex("MyProject", "script1.sh", scriptShLFContent);
+
+            // script2.bat is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "script2.sh", scriptShLFContent);
+            h.AssertFileInIndex("MyProject", "script2.sh", scriptShLFContent);
+        }
+
+        [FactExceptOnUnix]
+        public void LineNormalizationWhenGitAttributesGivenAndGitIgnoreGivenAndAutocrlfFalse()
+        {
+            string gitIgnoreFile = Path.Combine(h.Workdir, "git.Ignore");
+            string gitIgnoreContent = "*.exe\r\n*.com\r\n";
+            string gitAttributesFile = Path.Combine(h.Workdir, "git.Attributes");
+            string gitAttributesContent = "*.bat eol=crlf\r\n*.sh eol=lf\r\n";
+            string readmeContent = "tld \r\n another line \r\n";
+            string scriptBatContent = "rem Line 1\r\nrem Line 2\r\n";
+            string scriptBatLFContent = "rem Line 1\nrem Line 2\n";
+            string scriptShContent = "#!sh\r\n# Line 2\r\n# Line3\r\n";
+            string scriptShLFContent = "#!sh\n# Line 2\n# Line3\n";
+
+            File.WriteAllText(gitIgnoreFile, gitIgnoreContent);
+            File.WriteAllText(gitAttributesFile, gitAttributesContent);
+
+            h.SetupFake(r =>
+            {
+                r.Changeset(1, "Project created from template", DateTime.Parse("2012-01-01 12:12:12 -05:00"))
+                    .Change(TfsChangeType.Add, TfsItemType.Folder, "$/MyProject");
+                r.Changeset(2, "Add some files", DateTime.Parse("2012-01-02 12:12:12 -05:00"))
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/README", readmeContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script1.bat", scriptBatContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script2.bat", scriptBatLFContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script1.cmd", scriptBatContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script2.cmd", scriptBatLFContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script1.sh", scriptShContent)
+                    .Change(TfsChangeType.Add, TfsItemType.File, "$/MyProject/script2.sh", scriptShLFContent);
+            });
+            h.Run("clone", h.TfsUrl, "$/MyProject", "MyProject", "--autocrlf=false", $"--gitattributes={gitAttributesFile}", $"--gitignore={gitIgnoreFile}");
+
+            // Remove all the files from index and working tree then do a hard reset to the HEAD to force
+            // a clean get of the files as they would appear with .gitattributes settings applied.
+            h.Run("rm", "-rfq", ".");
+            h.Run("reset", "--hard", "HEAD");
+
+            // The file given in --gitattributes parameter is imported as is to .gitattributes; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", ".gitattributes", gitAttributesContent);
+            h.AssertFileInIndex("MyProject", ".gitattributes", gitAttributesContent);
+
+            // The file given in --gitignore parameter is imported as is to .gitignore; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", ".gitignore", gitIgnoreContent);
+            h.AssertFileInIndex("MyProject", ".gitignore", gitIgnoreContent);
+
+            // README is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "README", readmeContent);
+            h.AssertFileInIndex("MyProject", "README", readmeContent);
+
+            // script1.bat is imported converting to LF; LF in index, CRLF in workspace
+            h.AssertFileInWorkspace("MyProject", "script1.bat", scriptBatContent);
+            h.AssertFileInIndex("MyProject", "script1.bat", scriptBatLFContent);
+
+            // script2.bat is imported as is; LF in index, CRLF in workspace
+            h.AssertFileInWorkspace("MyProject", "script2.bat", scriptBatContent);
+            h.AssertFileInIndex("MyProject", "script2.bat", scriptBatLFContent);
+
+            // script1.cmd is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "script1.cmd", scriptBatContent);
+            h.AssertFileInIndex("MyProject", "script1.cmd", scriptBatContent);
+
+            // script2.cmd is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "script2.cmd", scriptBatLFContent);
+            h.AssertFileInIndex("MyProject", "script2.cmd", scriptBatLFContent);
+
+            // script1.sh is imported converting CRLF to LF; LF in index, LF in workspace
+            h.AssertFileInWorkspace("MyProject", "script1.sh", scriptShLFContent);
+            h.AssertFileInIndex("MyProject", "script1.sh", scriptShLFContent);
+
+            // script2.bat is imported as is; no line ending conversions
+            h.AssertFileInWorkspace("MyProject", "script2.sh", scriptShLFContent);
+            h.AssertFileInIndex("MyProject", "script2.sh", scriptShLFContent);
+        }
+
+        [FactExceptOnUnix]
         public void HandlesIgnoredFilesParticipatingInRenames()
         {
             h.SetupFake(r =>
