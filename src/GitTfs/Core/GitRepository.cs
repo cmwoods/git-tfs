@@ -804,7 +804,7 @@ namespace GitTfs.Core
             Trace.WriteLine("Init clone commit created: " + sha);
 
             _repository.Refs.Add(ShortToTfsRemoteName("default"), new ObjectId(sha));
-            _repository.Refs.Add(ShortToLocalName("master"), new ObjectId(sha));
+            _repository.Refs.Add(ShortToLocalName(_repository.Head.FriendlyName), new ObjectId(sha));
 
             return sha;
         }

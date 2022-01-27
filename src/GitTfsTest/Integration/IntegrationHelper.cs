@@ -112,6 +112,11 @@ namespace GitTfs.Test.Integration
                 LibGit2Sharp.Commands.Checkout(_repo, _repo.CreateBranch(branchName));
             }
 
+            public string GetCurrentBranchName()
+            {
+                return _repo.Head.FriendlyName;
+            }
+
             public void Checkout(string commitishName)
             {
                 LibGit2Sharp.Commands.Checkout(_repo, commitishName);

@@ -94,10 +94,11 @@ namespace GitTfs.Test.Integration
             string c3 = null;
             h.SetupGitRepo("repo", g =>
             {
+                string curBranch = g.GetCurrentBranchName();
                 c1 = g.Commit("A sample commit from TFS.\n\ngit-tfs-id: [http://server/tfs]$/MyProject/trunk;C" + ChangesetIdToTrickFetch);
                 g.CreateBranch("branch");
                 c2 = g.Commit("A sample commit from TFS.\n\ngit-tfs-id: [http://server/tfs]$/MyProject/branch;C" + ChangesetIdToTrickFetch);
-                g.Checkout("master");
+                g.Checkout(curBranch);
                 c3 = g.Commit("A merge commit from TFS.\n\ngit-tfs-id: [http://server/tfs]$/MyProject/trunk;C" + ChangesetIdToTrickFetch);
                 g.Merge("branch");
             });
@@ -129,10 +130,11 @@ namespace GitTfs.Test.Integration
             string c4 = null;
             h.SetupGitRepo("repo", g =>
             {
+                string curBranch = g.GetCurrentBranchName();
                 c1 = g.Commit("A sample commit from TFS.\n\ngit-tfs-id: [http://server/tfs]$/MyProject/trunk;C" + ChangesetIdToTrickFetch);
                 g.CreateBranch("branch");
                 c2 = g.Commit("A sample commit from TFS.\n\ngit-tfs-id: [http://server/tfs]$/MyProject/branch;C" + ChangesetIdToTrickFetch);
-                g.Checkout("master");
+                g.Checkout(curBranch);
                 c3 = g.Commit("A sample commit from TFS.\n\ngit-tfs-id: [http://server/tfs]$/MyProject/trunk;C" + ChangesetIdToTrickFetch);
                 g.Merge("branch");
                 //Trick to create a merge commit similar to one fetched from TFS
@@ -194,16 +196,17 @@ namespace GitTfs.Test.Integration
             string c6 = null;
             h.SetupGitRepo("repo", g =>
             {
+                string curBranch = g.GetCurrentBranchName();
                 c1 = g.Commit("C1-Common", "one_file.txt");
                 c2 = g.Commit("C2-Common", "one_file.txt");
                 g.CreateBranch("branch");
                 c4 = g.Commit("C4-branch", "another_file.txt");
                 c5 = g.Commit("C5-branch", "another_file.txt");
-                g.Checkout("master");
-                c3 = g.Commit("C3-master", "one_file.txt");
+                g.Checkout(curBranch);
+                c3 = g.Commit($"C3-{curBranch}", "one_file.txt");
                 g.Merge("branch");
                 //Trick to create a merge commit similar to one fetched from TFS
-                c6 = g.Amend("C6-master (merge branch into)");
+                c6 = g.Amend($"C6-{curBranch} (merge branch into)");
             });
 
 
