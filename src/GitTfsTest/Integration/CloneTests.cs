@@ -257,12 +257,12 @@ namespace GitTfs.Test.Integration
             // The commit hashes for all of the refs below (except for refs/remotes/tfs/branch_from_nowhere - see above) reflect the fact
             // that the first commit to the repository is the .gitignore specified with the --gitignore option. As a result, these hashes
             // differ from those of the WhenCloningFunctionalTestVtccdsWithBranchesRenaming_ThenAllRenamesShouldBeWellHandled test.
-            AssertNewClone("Vtccds", new[] { "refs/heads/master", "refs/remotes/tfs/default" }, commit: "2c047e8c26998bd261ec50716e8574e691efc990");
-            AssertNewClone("Vtccds", new[] { "refs/heads/b1", "refs/remotes/tfs/b1" }, commit: "5afc5abed88f15087796e8419aee6c133b8f1786");
-            AssertNewClone("Vtccds", new[] { "refs/heads/b1.1", "refs/remotes/tfs/b1.1" }, commit: "cc1cbc9fd62fa7e4ee55a3619858b27c62eb9c00");
-            AssertNewClone("Vtccds", new[] { "refs/heads/renameFile", "refs/remotes/tfs/renameFile" }, commit: "cd9aafa3bae84c2b55def73c6dc1cad0dc83dd76");
+            AssertNewClone("Vtccds", new[] { "refs/heads/master", "refs/remotes/tfs/default" }, commit: "ffebad6c2f415337bd8b246e8c33ec7efcf5c4ff");
+            AssertNewClone("Vtccds", new[] { "refs/heads/b1", "refs/remotes/tfs/b1" }, commit: "b6c4ec657d8abd16b56ad7441dee13fc23ef593e");
+            AssertNewClone("Vtccds", new[] { "refs/heads/b1.1", "refs/remotes/tfs/b1.1" }, commit: "c6c74bc67ba01d4d9b4958f20e66e3936f5db364");
+            AssertNewClone("Vtccds", new[] { "refs/heads/renameFile", "refs/remotes/tfs/renameFile" }, commit: "03f60442bf04d176b8aa27b6b2ebff9418c34c3f");
             AssertNewClone("Vtccds", new[] { "refs/remotes/tfs/branch_from_nowhere" }, commit: "9cb91c60d76d00af182ae9f16da6e6aa77b88a5e");
-            AssertNewClone("Vtccds", new[] { "refs/heads/renamed3", "refs/remotes/tfs/renamed3" }, commit: "891e14ba4977835cb1ca06f1ceaa5c7948ea5785");
+            AssertNewClone("Vtccds", new[] { "refs/heads/renamed3", "refs/remotes/tfs/renamed3" }, commit: "1d2558e36048a05bc67c0da3bf0f03bf6f52449e");
 
             //No refs for renamed branches
             h.AssertNoRef("Vtccds", "refs/remotes/tfs/renamedTwice");
@@ -671,7 +671,7 @@ namespace GitTfs.Test.Integration
             h.AssertFileInWorkspace("MyProject", "Folder/File.txt", "File contents");
             h.AssertFileInWorkspace("MyProject", "README", "tldr");
             AssertNewClone("MyProject", new[] { "HEAD", "refs/heads/main", "refs/remotes/tfs/default" },
-                commit: "1e9f1c2dfc1a0b5e4e6f135525a60d7c33a2d0aa",
+                commit: "50f0868c5430c8a623ed9f06b229d2a4a2da0269",
                 tree: "2ef92a065910b3cc3a1379e41a034e90f2e610ec");
             h.AssertNoRef("MyProject", "master");
         }
@@ -723,7 +723,7 @@ namespace GitTfs.Test.Integration
             h.AssertFileInWorkspace("MyProject", "README", "tldr");
             h.AssertFileInWorkspace("MyProject", ".gitignore", gitignoreContent);
             AssertNewClone("MyProject", new[] { "HEAD", "refs/heads/master", "refs/remotes/tfs/default" },
-                commit: "d1802bd0cee53f20ed69f182d1835e93697762a1",
+                commit: "e228f6ee70736b249dc09ad43b464deb4c3ea1c7",
                 tree: "2ef92a065910b3cc3a1379e41a034e90f2e610ec");
         }
     }

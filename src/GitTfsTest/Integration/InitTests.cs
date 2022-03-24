@@ -77,8 +77,8 @@ namespace GitTfs.Test.Integration
             h.SetupFake(r => { });
             h.RunInWithConfig(".", "GitTfs.Test.Integration.GlobalConfigs.mainDefaultBranch.gitconfig", "init", "http://my-tfs.local/tfs", "$/MyProject", "MyProject", $"--gitignore={gitignoreFile}");
             h.AssertNoRef("MyProject", "refs/heads/master");
-            h.AssertRef("MyProject", "refs/heads/main", "077fd68c084ef718a505f0a7375330c68d699f40");
-            h.AssertRef("MyProject", "refs/remotes/tfs/default", "077fd68c084ef718a505f0a7375330c68d699f40");
+            h.AssertRef("MyProject", "refs/heads/main", "d9f7c6b13a0c849d3d31162be734f4ecfaeeac20");
+            h.AssertRef("MyProject", "refs/remotes/tfs/default", "d9f7c6b13a0c849d3d31162be734f4ecfaeeac20");
         }
     }
 }
